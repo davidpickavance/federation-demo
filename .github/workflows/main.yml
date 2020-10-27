@@ -1,0 +1,20 @@
+name: Check
+
+# Controls when the action will run. Triggers schema validation on every pull request against main
+on:
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  schema-check:
+    # The type of runner that the job will run on any runner with node will work
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run schema check
+      env: # Apollo Key is supplied as an env var from github secrets
+        APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
+      run: npx apollo service:check --branch=${GITHUB_REF#refs/heads/} --author=$GITHUB_ACTOR
